@@ -19,12 +19,21 @@ export class GuardasService {
 
   ) {}
 
+  /*
+    =========================
+    LISTAR
+    =========================
+  */
+
   async listar():
     Promise<Guarda[]> {
 
     const {
+
       data,
+
       error
+
     } = await this
 
       .supabase
@@ -40,8 +49,35 @@ export class GuardasService {
       throw error;
     }
 
-    return data ?? [];
+    return (data ?? []).map(
+
+      item => ({
+
+        id:
+          item.id,
+
+        nome:
+          item.nome,
+
+        matricula:
+          item.matricula,
+
+        tipoEscala:
+          item.tipo_escala,
+
+        ativo:
+          item.ativo
+
+      })
+
+    );
   }
+
+  /*
+    =========================
+    CRIAR
+    =========================
+  */
 
   async criar(
     guarda: Guarda
@@ -56,13 +92,36 @@ export class GuardasService {
 
         .from('guardas')
 
-        .insert(guarda);
+        .insert({
+
+          id:
+            guarda.id,
+
+          nome:
+            guarda.nome,
+
+          matricula:
+            guarda.matricula,
+
+          tipo_escala:
+            guarda.tipoEscala,
+
+          ativo:
+            guarda.ativo
+
+        });
 
     if(error) {
 
       throw error;
     }
   }
+
+  /*
+    =========================
+    REMOVER
+    =========================
+  */
 
   async remover(
     id: string

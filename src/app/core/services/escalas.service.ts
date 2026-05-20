@@ -1,5 +1,4 @@
-import { Injectable }
-from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { EscalaMensal }
 from '../models/escala-mensal.model';
@@ -13,34 +12,47 @@ from './supabase.service';
 export class EscalasService {
 
   constructor(
-
     private readonly supabase:
       SupabaseService
-
   ) {}
 
   async listar():
     Promise<EscalaMensal[]> {
 
-    const {
-      data,
-      error
-    } = await this
-
-      .supabase
-
-      .client
-
-      .from('escalas')
-
-      .select('*');
+    const { data, error } =
+      await this
+        .supabase
+        .client
+        .from('escalas')
+        .select('*');
 
     if(error) {
-
       throw error;
     }
 
-    return data ?? [];
+    return (data ?? []).map(
+      item => ({
+
+        id:
+          item.id,
+
+        postoId:
+          item.posto_id,
+
+        mes:
+          item.mes,
+
+        ano:
+          item.ano,
+
+        dias:
+          item.dias,
+
+        ultimoGrupo:
+          item.ultimo_grupo
+
+      })
+    );
   }
 
   async criar(
@@ -49,17 +61,49 @@ export class EscalasService {
 
     const { error } =
       await this
-
         .supabase
-
         .client
-
         .from('escalas')
+        .insert({
 
-        .insert(escala);
+          id:
+            escala.id,
+
+          posto_id:
+            escala.postoId,
+
+          mes:
+            escala.mes,
+
+          ano:
+            escala.ano,
+
+          dias:
+            escala.dias,
+
+          ultimo_grupo:
+            escala.ultimoGrupo
+
+        });
 
     if(error) {
+      throw error;
+    }
+  }
 
+  async remover(
+    id: string
+  ): Promise<void> {
+
+    const { error } =
+      await this
+        .supabase
+        .client
+        .from('escalas')
+        .delete()
+        .eq('id', id);
+
+    if(error) {
       throw error;
     }
   }

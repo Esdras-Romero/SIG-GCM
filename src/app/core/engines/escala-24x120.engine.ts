@@ -81,6 +81,8 @@ export function gerarEscala24x120(
 
   return {
 
+    id: crypto.randomUUID(),
+
     postoId,
 
     mes,

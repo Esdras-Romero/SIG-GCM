@@ -2,6 +2,8 @@ import { DiaEscala } from './dia-escala.model';
 
 export interface EscalaMensal {
 
+  id: string;
+
   postoId: string;
 
   mes: number;
