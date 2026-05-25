@@ -60,4 +60,12 @@ export class GuardaFacade {
       .remover(id);
   }
 
+  async atualizar(guarda: Guarda): Promise<void> {
+    await this.store.atualizar(guarda);
+  }
+
+  buscarPorId(id: string): Guarda | undefined {
+    return this.store.buscarPorId(id);
+  }
+
 }

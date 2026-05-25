@@ -4,11 +4,9 @@ import {
   computed
 } from '@angular/core';
 
-import { Guarda }
-from '../models/guarda.model';
+import { Guarda } from '../models/guarda.model';
 
-import { GuardasService }
-from '../services/guardas.service';
+import { GuardasService } from '../services/guardas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +14,7 @@ from '../services/guardas.service';
 export class GuardasStore {
 
   constructor(
-
-    private readonly service:
-      GuardasService
-
+    private readonly service: GuardasService
   ) {}
 
   /*
@@ -39,87 +34,80 @@ export class GuardasStore {
   */
   readonly totalGuardas =
     computed(() =>
-
       this._guardas().length
-
     );
 
   /*
     Carregar do Supabase.
   */
-  async carregar():
-    Promise<void> {
-
+  async carregar(): Promise<void> {
     const guardas =
+      await this.service.listar();
 
-      await this.service
-        .listar();
-
-    this._guardas.set(
-      guardas
-    );
+    this._guardas.set(guardas);
   }
 
   /*
-    Adicionar.
+    Adicionar guarda e recarregar lista.
   */
   async adicionar(
     guarda: Guarda
   ): Promise<void> {
 
-    await this.service
-      .criar(guarda);
+    await this.service.criar(guarda);
 
-    this._guardas.update(
-
-      guardas => [
-        ...guardas,
-        guarda
-      ]
-
-    );
+    await this.carregar();
   }
 
   /*
-    Remover.
+    Atualizar guarda e recarregar lista.
+  */
+  async atualizar(
+    guarda: Guarda
+  ): Promise<void> {
+
+    await this.service.atualizar(guarda);
+
+    await this.carregar();
+  }
+
+  /*
+    Remover guarda e recarregar lista.
   */
   async remover(
     id: string
   ): Promise<void> {
 
-    await this.service
-      .remover(id);
+    await this.service.remover(id);
 
-    this._guardas.update(
-
-      guardas =>
-
-        guardas.filter(
-
-          guarda =>
-            guarda.id !== id
-
-        )
-
-    );
+    await this.carregar();
   }
 
   /*
-    Buscar matrícula.
+    Buscar por ID.
+  */
+  buscarPorId(
+    id: string
+  ): Guarda | undefined {
+
+    return this._guardas()
+      .find(
+        guarda =>
+          guarda.id === id
+      );
+  }
+
+  /*
+    Buscar por matrícula.
   */
   buscarPorMatricula(
     matricula: string
   ): Guarda | undefined {
 
     return this._guardas()
-
       .find(
-
         guarda =>
-
-          guarda.matricula ===
-          matricula
-
+          guarda.matricula === matricula
       );
   }
 

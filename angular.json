@@ -12,32 +12,44 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+
       "architect": {
+
         "build": {
+
           "builder": "@angular/build:application",
+
           "options": {
+
             "browser": "src/main.ts",
+
             "tsConfig": "tsconfig.app.json",
+
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
+
             "styles": [
               "src/styles.css"
             ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
+
+            "outputMode": "static",
+
+            "prerender": false,
+
             "security": {
               "allowedHosts": []
-            },
-            "ssr": {
-              "entry": "src/server.ts"
             }
+
           },
+
           "configurations": {
+
             "production": {
+
               "budgets": [
                 {
                   "type": "initial",
@@ -50,32 +62,51 @@
                   "maximumError": "8kB"
                 }
               ],
+
               "outputHashing": "all"
+
             },
+
             "development": {
+
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+
             }
+
           },
+
           "defaultConfiguration": "production"
+
         },
+
         "serve": {
+
           "builder": "@angular/build:dev-server",
+
           "configurations": {
+
             "production": {
               "buildTarget": "sig-gcm:build:production"
             },
+
             "development": {
               "buildTarget": "sig-gcm:build:development"
             }
+
           },
+
           "defaultConfiguration": "development"
+
         },
+
         "test": {
           "builder": "@angular/build:unit-test"
         }
+
       }
+
     }
   }
 }

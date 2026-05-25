@@ -1,0 +1,95 @@
+<section class="p-6">
+
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">
+      Guardas
+    </h1>
+
+    <div class="flex gap-2">
+      <a
+        routerLink="/dashboard"
+        class="bg-gray-700 text-white px-4 py-2 rounded"
+      >
+        Voltar ao Dashboard
+      </a>
+
+      <a
+        routerLink="/guardas/cadastro"
+        class="bg-blue-700 text-white px-4 py-2 rounded"
+      >
+        Novo Guarda
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <p>Carregando guardas...</p>
+  }
+
+  @if (mensagem()) {
+    <p class="mb-4 text-green-700">
+      {{ mensagem() }}
+    </p>
+  }
+
+  <p class="mb-4">
+    Total: {{ guardaFacade.totalGuardas() }}
+  </p>
+
+  <table class="w-full border border-gray-300">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border p-2 text-left">Nome</th>
+        <th class="border p-2 text-left">Matrícula</th>
+        <th class="border p-2 text-left">Tipo de Escala</th>
+        <th class="border p-2 text-left">Status</th>
+        <th class="border p-2 text-left">Ações</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (guarda of guardaFacade.guardas(); track guarda.id) {
+        <tr>
+          <td class="border p-2">
+            {{ guarda.nome }}
+          </td>
+
+          <td class="border p-2">
+            {{ guarda.matricula }}
+          </td>
+
+          <td class="border p-2">
+            {{ guarda.tipoEscala }}
+          </td>
+
+          <td class="border p-2">
+            {{ guarda.ativo ? 'Ativo' : 'Inativo' }}
+          </td>
+
+          <td class="border p-2 flex gap-2">
+            <a
+              [routerLink]="['/guardas/editar', guarda.id]"
+              class="bg-yellow-500 text-white px-3 py-1 rounded"
+            >
+              Editar
+            </a>
+
+            <button
+              class="bg-red-600 text-white px-3 py-1 rounded"
+              (click)="remover(guarda.id)"
+            >
+              Remover
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" class="border p-2 text-center">
+            Nenhum guarda encontrado.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</section>

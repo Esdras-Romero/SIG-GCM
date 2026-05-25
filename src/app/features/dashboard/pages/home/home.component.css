@@ -1,0 +1,7 @@
+.sidebar-button {
+  transition: all 0.2s ease;
+}
+
+.sidebar-button:hover {
+  transform: translateX(4px);
+}

@@ -1,0 +1,101 @@
+<section class="p-6 max-w-xl">
+
+  <h1 class="text-2xl font-bold mb-4">
+    Editar Guarda
+  </h1>
+
+  @if (loading()) {
+    <p class="mb-4">
+      Carregando...
+    </p>
+  }
+
+  @if (mensagemErro()) {
+    <p class="text-red-600 mb-4">
+      {{ mensagemErro() }}
+    </p>
+  }
+
+  <form
+    (ngSubmit)="salvar()"
+    class="space-y-4"
+  >
+
+    <div>
+      <label class="block mb-1">
+        Nome
+      </label>
+
+      <input
+        type="text"
+        name="nome"
+        [(ngModel)]="guarda.nome"
+        class="w-full border rounded p-2"
+        required
+      />
+    </div>
+
+    <div>
+      <label class="block mb-1">
+        Matrícula
+      </label>
+
+      <input
+        type="text"
+        name="matricula"
+        [(ngModel)]="guarda.matricula"
+        class="w-full border rounded p-2"
+        required
+      />
+    </div>
+
+    <div>
+      <label class="block mb-1">
+        Tipo de Escala
+      </label>
+
+      <select
+        name="tipoEscala"
+        [(ngModel)]="guarda.tipoEscala"
+        class="w-full border rounded p-2"
+      >
+        <option value="24x120">
+          24x120
+        </option>
+
+        <option value="ADMINISTRATIVO">
+          Administrativo
+        </option>
+      </select>
+    </div>
+
+    <label class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="ativo"
+        [(ngModel)]="guarda.ativo"
+      />
+
+      Ativo
+    </label>
+
+    <div class="flex gap-2">
+      <button
+        type="submit"
+        class="bg-blue-700 text-white px-4 py-2 rounded"
+        [disabled]="loading()"
+      >
+        Salvar Alterações
+      </button>
+
+      <a
+        routerLink="/guardas"
+        class="bg-gray-700 text-white px-4 py-2 rounded"
+      >
+        Voltar
+      </a>
+    </div>
+
+  </form>
+
+</section>
