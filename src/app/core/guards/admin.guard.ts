@@ -1,61 +1,35 @@
-// src/app/core/guards/admin.guard.ts
-
-import { inject }
-from '@angular/core';
+import { inject } from '@angular/core';
 
 import {
   CanActivateFn,
   Router
 } from '@angular/router';
 
-import { AuthService }
-from '../services/auth.service';
+import { AuthApiService }
+from '../services/auth-api.service';
 
-export const adminGuard:
-  CanActivateFn = async () => {
+export const adminGuard: CanActivateFn = () => {
 
   const authService =
-    inject(AuthService);
+    inject(AuthApiService);
 
   const router =
     inject(Router);
 
-  try {
+  const usuario =
+    authService.obterUsuario();
 
-    await authService
-      .carregarUsuarioAtual();
-
-    const usuario =
-
-      authService
-        .usuario();
-
-    if(!usuario) {
-
-      return router.createUrlTree([
-        '/auth/login'
-      ]);
-    }
-
-    const role =
-
-      usuario.user_metadata
-        ?.['role'];
-
-    if(role === 'admin') {
-
-      return true;
-    }
-
-    return router.createUrlTree([
-      '/acesso-negado'
-    ]);
-
-  } catch {
-
+  if (!usuario) {
     return router.createUrlTree([
       '/auth/login'
     ]);
   }
 
+  if (usuario.perfil === 'ADMINISTRADOR') {
+    return true;
+  }
+
+  return router.createUrlTree([
+    '/acesso-negado'
+  ]);
 };

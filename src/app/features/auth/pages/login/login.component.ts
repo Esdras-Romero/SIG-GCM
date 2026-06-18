@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthApiService } from '../../../../core/services/auth-api.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +11,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
+
   email = '';
   senha = '';
 
@@ -18,7 +19,7 @@ export class LoginComponent {
   mensagemErro = signal('');
 
   constructor(
-    private readonly authService: AuthService,
+    private readonly authService: AuthApiService,
     private readonly router: Router
   ) {}
 
@@ -27,22 +28,28 @@ export class LoginComponent {
       this.loading.set(true);
       this.mensagemErro.set('');
 
-      await this.authService.login(
-        this.email,
-        this.senha
-      );
+      const usuario = await this.authService.login({
+        email: this.email,
+        senha: this.senha
+      });
 
-      await this.router.navigate([
-        '/dashboard'
-      ]);
+      this.authService.salvarUsuario(usuario);
+
+      if (usuario.perfil === 'ADMINISTRADOR') {
+        await this.router.navigate(['/dashboard']);
+        return;
+      }
+
+      if (usuario.perfil === 'GUARDA') {
+        await this.router.navigate(['/area-guarda']);
+        return;
+      }
+
+      this.mensagemErro.set('Perfil de usuário inválido.');
 
     } catch (error) {
       console.error(error);
-
-      this.mensagemErro.set(
-        'E-mail ou senha inválidos.'
-      );
-
+      this.mensagemErro.set('E-mail ou senha inválidos.');
     } finally {
       this.loading.set(false);
     }

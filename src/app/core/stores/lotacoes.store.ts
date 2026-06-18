@@ -7,8 +7,8 @@ import {
 import { Lotacao }
 from '../models/lotacao.model';
 
-import { LotacoesService }
-from '../services/lotacoes.service';
+import { LotacoesApiService }
+from '../services/lotacoes-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +16,7 @@ from '../services/lotacoes.service';
 export class LotacoesStore {
 
   constructor(
-
-    private readonly service:
-      LotacoesService
-
+    private readonly service: LotacoesApiService
   ) {}
 
   private readonly _lotacoes =
@@ -28,74 +25,73 @@ export class LotacoesStore {
   readonly lotacoes =
     this._lotacoes.asReadonly();
 
+  readonly totalLotacoes =
+    computed(() =>
+      this._lotacoes().length
+    );
+
   readonly lotacoesAtivas =
     computed(() =>
-
       this._lotacoes()
-
         .filter(
-
           lotacao =>
             lotacao.ativo
-
         )
-
     );
 
-  async carregar():
-    Promise<void> {
+  async carregar(): Promise<void> {
 
     const lotacoes =
+      await this.service.listar();
 
-      await this.service
-        .listar();
-
-    this._lotacoes.set(
-      lotacoes
-    );
+    this._lotacoes.set(lotacoes);
   }
 
   async adicionar(
     lotacao: Lotacao
   ): Promise<void> {
 
-    await this.service
-      .criar(lotacao);
+    await this.service.criar(lotacao);
 
-    this._lotacoes.update(
-
-      lotacoes => [
-        ...lotacoes,
-        lotacao
-      ]
-
-    );
+    await this.carregar();
   }
 
-  encerrar(
+  async atualizar(
+    lotacao: Lotacao
+  ): Promise<void> {
+
+    await this.service.atualizar(lotacao);
+
+    await this.carregar();
+  }
+
+  async remover(
     id: string
-  ): void {
+  ): Promise<void> {
 
-    this._lotacoes.update(
+    await this.service.remover(id);
 
-      lotacoes =>
-
-        lotacoes.map(
-
-          lotacao =>
-
-            lotacao.id === id
-
-              ? {
-                  ...lotacao,
-                  ativo: false
-                }
-
-              : lotacao
-
-        )
-
-    );
+    await this.carregar();
   }
 
+  async encerrar(
+    lotacao: Lotacao
+  ): Promise<void> {
+
+    await this.atualizar({
+      ...lotacao,
+      ativo: false
+    });
+  }
+
+  buscarPorId(
+    id: string
+  ): Lotacao | undefined {
+
+    return this._lotacoes()
+      .find(
+        lotacao =>
+          lotacao.id === id
+      );
+  }
 }

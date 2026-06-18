@@ -4,11 +4,8 @@ import {
   computed
 } from '@angular/core';
 
-import { Posto }
-from '../models/posto.model';
-
-import { PostosService }
-from '../services/postos.service';
+import { Posto } from '../models/posto.model';
+import { PostosApiService } from '../services/postos-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +13,7 @@ from '../services/postos.service';
 export class PostosStore {
 
   constructor(
-
-    private readonly service:
-      PostosService
-
+    private readonly service: PostosApiService
   ) {}
 
   private readonly _postos =
@@ -29,58 +23,32 @@ export class PostosStore {
     this._postos.asReadonly();
 
   readonly totalPostos =
-    computed(() =>
+    computed(() => this._postos().length);
 
-      this._postos().length
-
-    );
-
-  async carregar():
-    Promise<void> {
-
+  async carregar(): Promise<void> {
     const postos =
+      await this.service.listar();
 
-      await this.service
-        .listar();
-
-    this._postos.set(
-      postos
-    );
+    this._postos.set(postos);
   }
 
-  async adicionar(
-    posto: Posto
-  ): Promise<void> {
-
-    await this.service
-      .criar(posto);
-
-    this._postos.update(
-
-      postos => [
-        ...postos,
-        posto
-      ]
-
-    );
+  async adicionar(posto: Posto): Promise<void> {
+    await this.service.criar(posto);
+    await this.carregar();
   }
 
-  remover(
-    id: string
-  ): void {
-
-    this._postos.update(
-
-      postos =>
-
-        postos.filter(
-
-          posto =>
-            posto.id !== id
-
-        )
-
-    );
+  async atualizar(posto: Posto): Promise<void> {
+    await this.service.atualizar(posto);
+    await this.carregar();
   }
 
+  async remover(id: string): Promise<void> {
+    await this.service.remover(id);
+    await this.carregar();
+  }
+
+  buscarPorId(id: string): Posto | undefined {
+    return this._postos()
+      .find(posto => posto.id === id);
+  }
 }

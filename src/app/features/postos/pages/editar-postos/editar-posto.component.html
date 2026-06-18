@@ -1,0 +1,101 @@
+<section class="p-6 flex justify-start text-gray-200">
+
+  <div class="w-full max-w-xl">
+
+    <h1 class="text-2xl font-bold mb-6 text-white">
+      Editar Posto
+    </h1>
+
+    @if (loading()) {
+      <p class="mb-4 text-gray-400">
+        Carregando...
+      </p>
+    }
+
+    @if (mensagemErro()) {
+      <p class="text-red-400 mb-4 font-medium">
+        {{ mensagemErro() }}
+      </p>
+    }
+
+    <form
+      (ngSubmit)="salvar()"
+      class="space-y-4"
+    >
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Nome do Posto
+        </label>
+        <input
+          type="text"
+          name="nome"
+          [(ngModel)]="posto.nome"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Local
+        </label>
+        <input
+          type="text"
+          name="local"
+          [(ngModel)]="posto.local"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Tipo de Escala
+        </label>
+        <select
+          name="tipoEscala"
+          [(ngModel)]="posto.tipoEscala"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+        >
+          <option value="24x120" class="bg-gray-800">24x120</option>
+          <option value="ADMINISTRATIVO" class="bg-gray-800">Administrativo</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Quantidade Mínima de Efetivo
+        </label>
+        <input
+          type="number"
+          name="quantidadeMinima"
+          [(ngModel)]="posto.quantidadeMinima"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          min="1"
+          required
+        />
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button
+          type="submit"
+          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          [disabled]="loading()"
+        >
+          Salvar Alterações
+        </button>
+
+        <a
+          routerLink="/postos"
+          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
+        >
+          Voltar
+        </a>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>

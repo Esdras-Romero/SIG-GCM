@@ -1,49 +1,26 @@
-// src/app/core/guards/auth.guard.ts
-
-import { inject }
-from '@angular/core';
+import { inject } from '@angular/core';
 
 import {
   CanActivateFn,
   Router
 } from '@angular/router';
 
-import { AuthService }
-from '../services/auth.service';
+import { AuthApiService }
+from '../services/auth-api.service';
 
-export const authGuard:
-  CanActivateFn = async () => {
+export const authGuard: CanActivateFn = () => {
 
   const authService =
-    inject(AuthService);
+    inject(AuthApiService);
 
   const router =
     inject(Router);
 
-  try {
-
-    await authService
-      .carregarSessaoAtual();
-
-    const autenticado =
-
-      authService
-        .autenticado();
-
-    if(autenticado) {
-
-      return true;
-    }
-
-    return router.createUrlTree([
-      '/auth/login'
-    ]);
-
-  } catch {
-
-    return router.createUrlTree([
-      '/auth/login'
-    ]);
+  if (authService.estaLogado()) {
+    return true;
   }
 
+  return router.createUrlTree([
+    '/auth/login'
+  ]);
 };

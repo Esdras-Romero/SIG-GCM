@@ -1,0 +1,108 @@
+<section class="p-6 text-slate-100">
+
+  <div class="flex justify-between items-center mb-4">
+
+    <h1 class="text-2xl font-bold text-white">
+      Escalas
+    </h1>
+
+    <div class="flex gap-2">
+      <a
+        routerLink="/dashboard"
+        class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 border border-gray-600"
+      >
+        Voltar ao Dashboard
+      </a>
+
+      <a
+        routerLink="/escalas/gerar"
+        class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Gerar Escala
+      </a>
+    </div>
+
+  </div>
+
+  @if (loading()) {
+    <p class="text-gray-400">
+      Carregando escalas...
+    </p>
+  }
+
+  @if (mensagemErro()) {
+    <p class="text-red-400 font-medium mb-4">
+      {{ mensagemErro() }}
+    </p>
+  }
+
+  <p class="mb-4 text-gray-300 font-medium">
+    Total:
+    <span class="text-white font-bold">
+      {{ escalasStore.totalEscalas() }}
+    </span>
+  </p>
+
+  <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
+
+    <thead>
+      <tr class="bg-gray-800 text-white">
+        <th class="border border-gray-700 p-2 text-left">Posto</th>
+        <th class="border border-gray-700 p-2 text-left">Mês</th>
+        <th class="border border-gray-700 p-2 text-left">Ano</th>
+        <th class="border border-gray-700 p-2 text-left">Tipo</th>
+        <th class="border border-gray-700 p-2 text-left">Status</th>
+        <th class="border border-gray-700 p-2 text-left">Dias Gerados</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      @for (escala of escalasStore.escalas(); track escala.id) {
+
+        <tr class="hover:bg-gray-800/50 text-gray-200 transition-colors">
+
+          <td class="border border-gray-700 p-2 font-medium text-white">
+            {{ nomePosto(escala.postoId) }}
+          </td>
+
+          <td class="border border-gray-700 p-2">
+            {{ escala.mes }}
+          </td>
+
+          <td class="border border-gray-700 p-2">
+            {{ escala.ano }}
+          </td>
+
+          <td class="border border-gray-700 p-2">
+            {{ escala.tipoEscala }}
+          </td>
+
+          <td class="border border-gray-700 p-2">
+            {{ escala.status }}
+          </td>
+
+          <td class="border border-gray-700 p-2">
+            {{ escala.dias.length }}
+          </td>
+
+        </tr>
+
+      } @empty {
+
+        <tr>
+          <td
+            colspan="6"
+            class="border border-gray-700 p-4 text-center text-gray-400"
+          >
+            Nenhuma escala encontrada.
+          </td>
+        </tr>
+
+      }
+
+    </tbody>
+
+  </table>
+
+</section>

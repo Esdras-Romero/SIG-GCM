@@ -6,7 +6,7 @@ import {
 
 import { Guarda } from '../models/guarda.model';
 
-import { GuardasService } from '../services/guardas.service';
+import { GuardasApiService } from '../services/guardas-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ import { GuardasService } from '../services/guardas.service';
 export class GuardasStore {
 
   constructor(
-    private readonly service: GuardasService
+    private readonly service: GuardasApiService
   ) {}
 
   /*
@@ -38,7 +38,7 @@ export class GuardasStore {
     );
 
   /*
-    Carregar do Supabase.
+  Carregar da API REST.
   */
   async carregar(): Promise<void> {
     const guardas =

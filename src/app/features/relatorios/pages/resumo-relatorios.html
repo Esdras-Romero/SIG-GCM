@@ -1,0 +1,126 @@
+<section class="p-6 text-slate-100">
+
+  <div class="flex justify-between items-center mb-6">
+
+    <h1 class="text-2xl font-bold text-white">
+      Relatórios
+    </h1>
+
+    <a
+      routerLink="/dashboard"
+      class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 border border-gray-600"
+    >
+      Voltar ao Dashboard
+    </a>
+
+  </div>
+
+  @if (loading()) {
+    <p class="text-gray-400">
+      Carregando relatórios...
+    </p>
+  }
+
+  @if (mensagemErro()) {
+    <p class="text-red-400 font-medium mb-4">
+      {{ mensagemErro() }}
+    </p>
+  }
+
+  @if (relatoriosStore.resumo()) {
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Total de Guardas</p>
+        <h2 class="text-3xl font-bold text-white">
+          {{ relatoriosStore.resumo()?.totalGuardas }}
+        </h2>
+      </div>
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Guardas Ativos</p>
+        <h2 class="text-3xl font-bold text-green-400">
+          {{ relatoriosStore.resumo()?.guardasAtivos }}
+        </h2>
+      </div>
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Total de Postos</p>
+        <h2 class="text-3xl font-bold text-white">
+          {{ relatoriosStore.resumo()?.totalPostos }}
+        </h2>
+      </div>
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Total de Lotações</p>
+        <h2 class="text-3xl font-bold text-white">
+          {{ relatoriosStore.resumo()?.totalLotacoes }}
+        </h2>
+      </div>
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Lotações Ativas</p>
+        <h2 class="text-3xl font-bold text-green-400">
+          {{ relatoriosStore.resumo()?.lotacoesAtivas }}
+        </h2>
+      </div>
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-5">
+        <p class="text-gray-400 text-sm">Total de Escalas</p>
+        <h2 class="text-3xl font-bold text-white">
+          {{ relatoriosStore.resumo()?.totalEscalas }}
+        </h2>
+      </div>
+
+    </div>
+
+  }
+
+  <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-6">
+
+    <h2 class="text-xl font-bold text-blue-400 mb-4">
+      Escalas por Tipo
+    </h2>
+
+    <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
+
+      <thead>
+        <tr class="bg-gray-800 text-white">
+          <th class="border border-gray-700 p-2 text-left">
+            Tipo de Escala
+          </th>
+          <th class="border border-gray-700 p-2 text-left">
+            Total
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of relatoriosStore.escalasPorTipo(); track item.tipoEscala) {
+          <tr class="hover:bg-gray-800/50 text-gray-200">
+            <td class="border border-gray-700 p-2">
+              {{ item.tipoEscala }}
+            </td>
+
+            <td class="border border-gray-700 p-2">
+              {{ item.totalEscalas }}
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              colspan="2"
+              class="border border-gray-700 p-4 text-center text-gray-400"
+            >
+              Nenhum dado de escala encontrado.
+            </td>
+          </tr>
+        }
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>

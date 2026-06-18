@@ -1,4 +1,4 @@
-<section class="p-6">
+<section class="p-6 text-slate-100">
 
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold">
@@ -8,14 +8,14 @@
     <div class="flex gap-2">
       <a
         routerLink="/dashboard"
-        class="bg-gray-700 text-white px-4 py-2 rounded"
+        class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 border-r-gray-600"
       >
         Voltar ao Dashboard
       </a>
 
       <a
         routerLink="/guardas/cadastro"
-        class="bg-blue-700 text-white px-4 py-2 rounded"
+        class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Novo Guarda
       </a>
@@ -23,59 +23,61 @@
   </div>
 
   @if (loading()) {
-    <p>Carregando guardas...</p>
+    <p class="text-gray-400">Carregando guardas...</p>
   }
 
   @if (mensagem()) {
-    <p class="mb-4 text-green-700">
+    <p class="mb-4 text-green-700 font-medium">
       {{ mensagem() }}
     </p>
   }
 
-  <p class="mb-4">
+  <p class="mb-4 text-gray-300 font-medium">
     Total: {{ guardaFacade.totalGuardas() }}
   </p>
 
-  <table class="w-full border border-gray-300">
-    <thead>
-      <tr class="bg-gray-100">
-        <th class="border p-2 text-left">Nome</th>
-        <th class="border p-2 text-left">Matrícula</th>
-        <th class="border p-2 text-left">Tipo de Escala</th>
-        <th class="border p-2 text-left">Status</th>
-        <th class="border p-2 text-left">Ações</th>
+  <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
+   <thead>
+      <tr class="bg-gray-800 text-white">
+        <th class="border border-gray-700 p-2 text-left">Nome</th>
+        <th class="border border-gray-700 p-2 text-left">Matrícula</th>
+        <th class="border border-gray-700 p-2 text-left">Tipo de Escala</th>
+        <th class="border border-gray-700 p-2 text-left">Status</th>
+        <th class="border border-gray-700 p-2 text-left">Ações</th>
       </tr>
     </thead>
 
-    <tbody>
+   <tbody>
       @for (guarda of guardaFacade.guardas(); track guarda.id) {
-        <tr>
-          <td class="border p-2">
+        <tr class="hover:bg-gray-800/50 text-gray-200 transition-colors">
+          <td class="border border-gray-700 p-2 font-medium text-white">
             {{ guarda.nome }}
           </td>
 
-          <td class="border p-2">
+          <td class="border border-gray-700 p-2">
             {{ guarda.matricula }}
           </td>
 
-          <td class="border p-2">
+          <td class="border border-gray-700 p-2">
             {{ guarda.tipoEscala }}
           </td>
 
-          <td class="border p-2">
-            {{ guarda.ativo ? 'Ativo' : 'Inativo' }}
+          <td class="border border-gray-700 p-2">
+            <span [class]="guarda.ativo ? 'text-green-400' : 'text-gray-400'">
+              {{ guarda.ativo ? 'Ativo' : 'Inativo' }}
+            </span>
           </td>
 
-          <td class="border p-2 flex gap-2">
+          <td class="border border-gray-700 p-2 flex gap-2">
             <a
               [routerLink]="['/guardas/editar', guarda.id]"
-              class="bg-yellow-500 text-white px-3 py-1 rounded"
+              class="bg-yellow-500 text-gray-900 font-medium px-3 py-1 rounded hover:bg-yellow-400 transition-colors"
             >
               Editar
             </a>
 
             <button
-              class="bg-red-600 text-white px-3 py-1 rounded"
+              class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500 transition-colors"
               (click)="remover(guarda.id)"
             >
               Remover
@@ -84,7 +86,7 @@
         </tr>
       } @empty {
         <tr>
-          <td colspan="5" class="border p-2 text-center">
+          <td colspan="5" class="border border-gray-700 p-4 text-center text-gray-400">
             Nenhum guarda encontrado.
           </td>
         </tr>

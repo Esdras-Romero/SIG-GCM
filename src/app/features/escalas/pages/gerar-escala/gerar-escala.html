@@ -1,0 +1,185 @@
+<section class="p-6 flex justify-start text-gray-200">
+
+  <div class="w-full max-w-xl">
+
+    <h1 class="text-2xl font-bold mb-6 text-white">
+      Gerar Escala
+    </h1>
+
+    <form
+      (ngSubmit)="gerar()"
+      class="space-y-4"
+    >
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Posto
+        </label>
+
+        <select
+          name="postoId"
+          [(ngModel)]="request.postoId"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          required
+        >
+          <option value="">
+            Selecione um posto
+          </option>
+
+          @for (posto of postosStore.postos(); track posto.id) {
+            <option
+              [value]="posto.id"
+              class="bg-gray-800"
+            >
+              {{ posto.nome }} - {{ posto.tipoEscala }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Mês
+        </label>
+
+        <input
+          type="number"
+          name="mes"
+          [(ngModel)]="request.mes"
+          min="1"
+          max="12"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Ano
+        </label>
+
+        <input
+          type="number"
+          name="ano"
+          [(ngModel)]="request.ano"
+          min="2024"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block mb-1 text-gray-300 font-medium">
+          Tipo de Escala
+        </label>
+
+        <select
+          name="tipoEscala"
+          [(ngModel)]="request.tipoEscala"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+        >
+          <option value="24x120" class="bg-gray-800">
+            24x120
+          </option>
+
+          <option value="12x60" class="bg-gray-800">
+            12x60
+          </option>
+
+          <option value="ADMINISTRATIVO" class="bg-gray-800">
+            Administrativo
+          </option>
+        </select>
+      </div>
+
+      @if (request.tipoEscala === '24x120') {
+        <div>
+          <label class="block mb-1 text-gray-300 font-medium">
+            Grupo Inicial
+          </label>
+
+          <select
+            name="grupoInicial"
+            [(ngModel)]="request.grupoInicial"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          >
+            <option value="A" class="bg-gray-800">A</option>
+            <option value="B" class="bg-gray-800">B</option>
+            <option value="C" class="bg-gray-800">C</option>
+            <option value="D" class="bg-gray-800">D</option>
+            <option value="E" class="bg-gray-800">E</option>
+            <option value="F" class="bg-gray-800">F</option>
+          </select>
+        </div>
+      }
+
+      @if (request.tipoEscala === '12x60') {
+        <div>
+          <label class="block mb-1 text-gray-300 font-medium">
+            Grupo Inicial Dia
+          </label>
+
+          <select
+            name="grupoInicialDia"
+            [(ngModel)]="request.grupoInicialDia"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          >
+            <option value="A" class="bg-gray-800">A</option>
+            <option value="B" class="bg-gray-800">B</option>
+            <option value="C" class="bg-gray-800">C</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 text-gray-300 font-medium">
+            Grupo Inicial Noite
+          </label>
+
+          <select
+            name="grupoInicialNoite"
+            [(ngModel)]="request.grupoInicialNoite"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          >
+            <option value="A" class="bg-gray-800">A</option>
+            <option value="B" class="bg-gray-800">B</option>
+            <option value="C" class="bg-gray-800">C</option>
+          </select>
+        </div>
+      }
+
+      @if (mensagemErro()) {
+        <p class="text-red-400 font-medium">
+          {{ mensagemErro() }}
+        </p>
+      }
+
+      @if (escalaGerada()) {
+        <div class="bg-green-900/40 border border-green-700 rounded p-4 text-green-300">
+          Escala gerada com sucesso.
+          Dias gerados: {{ escalaGerada()?.dias?.length }}
+        </div>
+      }
+
+      <div class="flex gap-2 pt-2">
+        <button
+          type="submit"
+          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          [disabled]="loading()"
+        >
+          {{ loading() ? 'Gerando...' : 'Gerar Escala' }}
+        </button>
+
+        <button
+          type="button"
+          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
+          (click)="voltarParaLista()"
+        >
+          Voltar
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>

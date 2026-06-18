@@ -1,0 +1,75 @@
+<section class="min-h-screen bg-[#111827] text-white p-8">
+
+  <div class="max-w-3xl mx-auto">
+
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">
+        Minha Escala
+      </h1>
+
+      <a
+        routerLink="/area-guarda"
+        class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded"
+      >
+        Voltar
+      </a>
+    </div>
+
+    @if (loading()) {
+      <p class="text-gray-300">
+        Carregando escala...
+      </p>
+    }
+
+    @if (mensagemErro()) {
+      <p class="text-red-400 font-medium mb-4">
+        {{ mensagemErro() }}
+      </p>
+    }
+
+    @if (lotacao()) {
+
+      <div class="bg-[#1f2937] border border-gray-700 rounded-xl p-6 shadow-lg">
+
+        <h2 class="text-xl font-bold text-blue-400 mb-4">
+          Dados da Lotação
+        </h2>
+
+        <div class="space-y-3 text-gray-300">
+
+          <p>
+            <span class="font-semibold text-white">
+              Grupo:
+            </span>
+            {{ lotacao()?.grupo || 'Não informado' }}
+          </p>
+
+          <p>
+            <span class="font-semibold text-white">
+              Turno:
+            </span>
+            {{ lotacao()?.turno || 'Não informado' }}
+          </p>
+
+          <p>
+            <span class="font-semibold text-white">
+              Status:
+            </span>
+            {{ lotacao()?.ativo ? 'Ativa' : 'Inativa' }}
+          </p>
+
+        </div>
+
+      </div>
+
+    } @else if (!loading() && !mensagemErro()) {
+
+      <p class="text-gray-400">
+        Nenhuma escala vinculada ao seu usuário.
+      </p>
+
+    }
+
+  </div>
+
+</section>

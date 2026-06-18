@@ -1,25 +1,22 @@
+import { TipoEscala } from './guarda.model';
+import { DiaEscala } from './dia-escala.model';
+
 export interface Escala {
-
   id: string;
-
-  guardaId: string;
-
   postoId: string;
+  mes: number;
+  ano: number;
+  tipoEscala: TipoEscala;
+  status: string;
+  dias: DiaEscala[];
+}
 
-  grupo:
-    'A' |
-    'B' |
-    'C' |
-    'D' |
-    'E' |
-    'F';
-
-  dataInicio: Date;
-
-  dataFim: Date;
-
-  tipoEscala:
-    '24x120' |
-    'ADMINISTRATIVO';
-
+export interface GerarEscalaRequest {
+  postoId: string;
+  mes: number;
+  ano: number;
+  tipoEscala: TipoEscala;
+  grupoInicial?: string;
+  grupoInicialDia?: string;
+  grupoInicialNoite?: string;
 }
