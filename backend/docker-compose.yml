@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: sig-gcm-postgres
+    restart: always
+
+    environment:
+      POSTGRES_DB: sig_gcm
+      POSTGRES_USER: siggcm
+      POSTGRES_PASSWORD: siggcm123
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - sig_gcm_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  sig_gcm_postgres_data:
