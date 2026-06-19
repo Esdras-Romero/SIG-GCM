@@ -1,59 +1,361 @@
-# SigGcm
+# SIG-GCM - Sistema Integrado de Gestão da Guarda Civil Municipal
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+## Sobre o Projeto
 
-## Development server
+O SIG-GCM é um sistema desenvolvido para apoiar o gerenciamento operacional da Guarda Civil Municipal, permitindo a administração de efetivos, postos de serviço, lotações, escalas de trabalho e consultas pelos próprios guardas.
 
-To start a local development server, run:
+O sistema foi projetado utilizando uma arquitetura em camadas, separando completamente o frontend, backend e banco de dados, permitindo manutenção, escalabilidade e acesso simultâneo por múltiplos usuários.
 
-```bash
+---
+
+# Arquitetura do Projeto
+
+```
+SIG-GCM
+│
+├── backend
+│   ├── src
+│   ├── pom.xml
+│   ├── mvnw
+│   └── docker-compose.yml
+│
+├── frontend
+│   ├── src
+│   ├── angular.json
+│   ├── package.json
+│   └── ...
+│
+├── .github
+└── README.md
+```
+
+---
+
+# Tecnologias Utilizadas
+
+## Frontend
+
+- Angular 21
+- TypeScript
+- Signals
+- Standalone Components
+- Angular Router
+- HttpClient
+- CSS
+
+---
+
+## Backend
+
+- Java 21
+- Spring Boot
+- Spring MVC
+- Spring Data JPA
+- Spring Security
+- Hibernate
+- Maven
+
+---
+
+## Banco de Dados
+
+- PostgreSQL
+- Supabase (Banco remoto)
+
+---
+
+## Desenvolvimento Local
+
+- Docker Desktop
+- PostgreSQL (opcional para desenvolvimento)
+
+---
+
+# Arquitetura da Aplicação
+
+```
+             Usuário
+
+                │
+
+                ▼
+
+       Angular (Frontend)
+
+                │
+        Requisições REST
+
+                ▼
+
+      Spring Boot (API REST)
+
+                │
+
+      Spring Data JPA/Hibernate
+
+                │
+
+                ▼
+
+      PostgreSQL (Supabase)
+```
+
+Todo o acesso ao banco de dados ocorre exclusivamente pelo backend.
+
+O frontend nunca acessa diretamente o banco de dados.
+
+---
+
+# Estrutura do Frontend
+
+```
+frontend
+│
+├── src
+│
+├── app
+│   ├── core
+│   │   ├── guards
+│   │   ├── interceptors
+│   │   ├── models
+│   │   ├── services
+│   │   └── stores
+│   │
+│   ├── features
+│   │   ├── auth
+│   │   ├── dashboard
+│   │   ├── guardas
+│   │   ├── postos
+│   │   ├── lotacoes
+│   │   ├── escalas
+│   │   ├── relatorios
+│   │   └── area-guarda
+│   │
+│   └── shared
+│
+└── environments
+```
+
+---
+
+# Estrutura do Backend
+
+```
+backend
+│
+├── controllers
+├── dtos
+├── entities
+├── enums
+├── mappers
+├── repositories
+├── security
+├── services
+├── config
+└── resources
+```
+
+---
+
+# Principais Funcionalidades
+
+## Administração
+
+- Cadastro de Guardas
+- Cadastro de Postos
+- Cadastro de Lotações
+- Geração de Escalas
+- Consulta de Relatórios
+
+---
+
+## Guarda
+
+- Login
+- Consulta da Escala Mensal
+- Consulta do Posto de Trabalho
+- Calendário Mensal de Serviço
+
+---
+
+# Tipos de Escala
+
+O sistema suporta atualmente:
+
+## 24x120
+
+- Escala por grupos (A-F)
+- Rotação automática
+- Controle de serviços extras
+
+---
+
+## 12x60
+
+- Turno Dia
+- Turno Noite
+
+---
+
+## Administrativo
+
+- Segunda à Sexta
+- Turno Manhã
+- Turno Tarde
+
+---
+
+# Persistência dos Dados
+
+O sistema utiliza PostgreSQL hospedado no Supabase.
+
+Isso permite:
+
+- Persistência permanente dos dados;
+- Acesso simultâneo por vários usuários;
+- Compartilhamento do banco entre diferentes computadores;
+- Eliminação da necessidade de manter um banco local para utilização do sistema.
+
+Durante o desenvolvimento também é possível utilizar PostgreSQL local através do Docker.
+
+---
+
+# Docker
+
+O backend possui suporte ao Docker para desenvolvimento local.
+
+Exemplo de utilização:
+
+```
+docker compose up -d
+```
+
+O Docker é utilizado apenas para ambiente de desenvolvimento.
+
+Em produção o sistema utiliza PostgreSQL remoto no Supabase.
+
+---
+
+# Executando o Projeto
+
+## 1 - Backend
+
+Entrar na pasta:
+
+```
+backend
+```
+
+Compilar:
+
+```
+mvn clean install
+```
+
+Executar:
+
+```
+mvn spring-boot:run
+```
+
+ou
+
+```
+.\mvnw spring-boot:run
+```
+
+Caso utilize perfil específico:
+
+```
+.\mvnw spring-boot:run "-Dspring-boot.run.profiles=supabase"
+```
+
+O backend ficará disponível em:
+
+```
+http://localhost:8080
+```
+
+---
+
+## 2 - Frontend
+
+Entrar na pasta:
+
+```
+frontend
+```
+
+Instalar dependências:
+
+```
+npm install
+```
+
+Executar:
+
+```
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+ou
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+O frontend ficará disponível em:
 
-```bash
-ng generate --help
+```
+http://localhost:4200
 ```
 
-## Building
+---
 
-To build the project run:
+# Fluxo da Aplicação
 
-```bash
-ng build
+```
+Navegador
+
+      │
+
+      ▼
+
+Angular
+
+      │
+
+HTTP REST
+
+      ▼
+
+Spring Boot
+
+      │
+
+Hibernate / JPA
+
+      ▼
+
+PostgreSQL (Supabase)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+# Organização do Projeto
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+O projeto foi organizado seguindo os princípios de separação de responsabilidades:
 
-```bash
-ng test
-```
+- Frontend responsável apenas pela interface do usuário;
+- Backend responsável pelas regras de negócio;
+- Banco de dados responsável apenas pela persistência.
 
-## Running end-to-end tests
+Essa arquitetura facilita manutenção, testes, escalabilidade e evolução do sistema.
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
-ng e2e
-```
+# Autor
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Desenvolvido como projeto da disciplina **Programação Web I** do curso de **Tecnólogo em Sistemas para Internet**.
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Instituto Federal da Paraíba – IFPB.
