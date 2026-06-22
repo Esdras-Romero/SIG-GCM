@@ -1,68 +1,68 @@
-<section class="p-6 flex justify-start text-gray-200">
+<section class="p-6 max-w-xl text-gray-200">
 
-  <div class="w-full max-w-xl">
+  <h1 class="text-2xl font-bold mb-6 text-white">
+    Cadastro de Lotação
+  </h1>
 
-    <h1 class="text-2xl font-bold mb-6 text-white">
-      Cadastro de Lotação
-    </h1>
+  <form
+    (ngSubmit)="salvar()"
+    class="space-y-4"
+  >
 
-    <form
-      (ngSubmit)="salvar()"
-      class="space-y-4"
-    >
+    <div>
+      <label class="block mb-1 text-gray-300 font-medium">
+        Guarda
+      </label>
 
-      <div>
-        <label class="block mb-1 text-gray-300 font-medium">
-          Guarda
-        </label>
+      <select
+        name="guardaId"
+        [(ngModel)]="lotacao.guardaId"
+        class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+        required
+      >
+        <option value="">
+          Selecione um guarda
+        </option>
 
-        <select
-          name="guardaId"
-          [(ngModel)]="lotacao.guardaId"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          required
-        >
-          <option value="">
-            Selecione um guarda
+        @for (guarda of guardasStore.guardas(); track guarda.id) {
+          <option
+            [value]="guarda.id"
+            class="bg-gray-800"
+          >
+            {{ guarda.nome }} - {{ guarda.matricula }}
           </option>
+        }
+      </select>
+    </div>
 
-          @for (guarda of guardaFacade.guardas(); track guarda.id) {
-            <option
-              [value]="guarda.id"
-              class="bg-gray-800"
-            >
-              {{ guarda.nome }} - {{ guarda.matricula }}
-            </option>
-          }
-        </select>
-      </div>
+    <div>
+      <label class="block mb-1 text-gray-300 font-medium">
+        Posto
+      </label>
 
-      <div>
-        <label class="block mb-1 text-gray-300 font-medium">
-          Posto
-        </label>
+      <select
+        name="postoId"
+        [(ngModel)]="lotacao.postoId"
+        (change)="aoSelecionarPosto()"
+        class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+        required
+      >
+        <option value="">
+          Selecione um posto
+        </option>
 
-        <select
-          name="postoId"
-          [(ngModel)]="lotacao.postoId"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          required
-        >
-          <option value="">
-            Selecione um posto
+        @for (posto of postosStore.postos(); track posto.id) {
+          <option
+            [value]="posto.id"
+            class="bg-gray-800"
+          >
+            {{ posto.nome }} - {{ posto.tipoEscala }}
           </option>
+        }
+      </select>
+    </div>
 
-          @for (posto of postoFacade.postos(); track posto.id) {
-            <option
-              [value]="posto.id"
-              class="bg-gray-800"
-            >
-              {{ posto.nome }} - {{ posto.tipoEscala }}
-            </option>
-          }
-        </select>
-      </div>
-
+    @if (gruposDisponiveis.length > 0) {
       <div>
         <label class="block mb-1 text-gray-300 font-medium">
           Grupo
@@ -71,17 +71,25 @@
         <select
           name="grupo"
           [(ngModel)]="lotacao.grupo"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
         >
-          <option value="A" class="bg-gray-800">A</option>
-          <option value="B" class="bg-gray-800">B</option>
-          <option value="C" class="bg-gray-800">C</option>
-          <option value="D" class="bg-gray-800">D</option>
-          <option value="E" class="bg-gray-800">E</option>
-          <option value="F" class="bg-gray-800">F</option>
+          <option [ngValue]="undefined">
+            Selecione o grupo
+          </option>
+
+          @for (grupo of gruposDisponiveis; track grupo) {
+            <option
+              [value]="grupo"
+              class="bg-gray-800"
+            >
+              {{ grupo }}
+            </option>
+          }
         </select>
       </div>
+    }
 
+    @if (turnosDisponiveis.length > 0) {
       <div>
         <label class="block mb-1 text-gray-300 font-medium">
           Turno
@@ -90,50 +98,56 @@
         <select
           name="turno"
           [(ngModel)]="lotacao.turno"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
         >
-          <option value="DIA" class="bg-gray-800">Dia</option>
-          <option value="NOITE" class="bg-gray-800">Noite</option>
-          <option value="MANHA" class="bg-gray-800">Manhã</option>
-          <option value="TARDE" class="bg-gray-800">Tarde</option>
+          <option [ngValue]="undefined">
+            Selecione o turno
+          </option>
+
+          @for (turno of turnosDisponiveis; track turno) {
+            <option
+              [value]="turno"
+              class="bg-gray-800"
+            >
+              {{ turno }}
+            </option>
+          }
         </select>
       </div>
+    }
 
-      <label class="flex items-center gap-2 text-gray-300 font-medium cursor-pointer">
-        <input
-          type="checkbox"
-          name="ativo"
-          [(ngModel)]="lotacao.ativo"
-          class="rounded bg-gray-800 border-gray-700 text-blue-600 focus:ring-0 focus:ring-offset-0"
-        />
-        Ativa
-      </label>
+    <label class="flex items-center gap-2 text-gray-300 font-medium">
+      <input
+        type="checkbox"
+        name="ativo"
+        [(ngModel)]="lotacao.ativo"
+      />
+      Ativa
+    </label>
 
-      @if (mensagemErro()) {
-        <p class="text-red-400 font-medium">
-          {{ mensagemErro() }}
-        </p>
-      }
+    @if (mensagemErro()) {
+      <p class="text-red-400 font-medium">
+        {{ mensagemErro() }}
+      </p>
+    }
 
-      <div class="flex gap-2 pt-2">
-        <button
-          type="submit"
-          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-          [disabled]="loading()"
-        >
-          {{ loading() ? 'Salvando...' : 'Salvar' }}
-        </button>
+    <div class="flex gap-2 pt-2">
+      <button
+        type="submit"
+        class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Salvando...' : 'Salvar' }}
+      </button>
 
-        <a
-          routerLink="/lotacoes"
-          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
-        >
-          Voltar
-        </a>
-      </div>
+      <a
+        routerLink="/lotacoes"
+        class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+      >
+        Voltar
+      </a>
+    </div>
 
-    </form>
-
-  </div>
+  </form>
 
 </section>

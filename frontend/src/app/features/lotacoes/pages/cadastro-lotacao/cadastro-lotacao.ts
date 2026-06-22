@@ -4,10 +4,12 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { Lotacao } from '../../../../core/models/lotacao.model';
+import { Guarda } from '../../../../core/models/guarda.model';
+import { Posto } from '../../../../core/models/posto.model';
 
 import { LotacaoFacade } from '../../state/lotacao.facade';
-import { GuardaFacade } from '../../../guardas/state/guarda.facade';
-import { PostoFacade } from '../../../postos/state/posto.facade';
+import { GuardasStore } from '../../../../core/stores/guardas.store';
+import { PostosStore } from '../../../../core/stores/postos.store';
 
 @Component({
   selector: 'app-cadastro-lotacao',
@@ -25,49 +27,108 @@ export class CadastroLotacaoComponent implements OnInit {
     guardaId: '',
     postoId: '',
     ativo: true,
-    grupo: 'A',
-    turno: 'DIA'
+    grupo: undefined,
+    turno: undefined
   };
 
+  gruposDisponiveis: string[] = [];
+  turnosDisponiveis: string[] = [];
+
   constructor(
+    public readonly guardasStore: GuardasStore,
+    public readonly postosStore: PostosStore,
     private readonly lotacaoFacade: LotacaoFacade,
-    public readonly guardaFacade: GuardaFacade,
-    public readonly postoFacade: PostoFacade,
     private readonly router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
     await Promise.all([
-      this.guardaFacade.carregar(),
-      this.postoFacade.carregar()
+      this.guardasStore.carregar(),
+      this.postosStore.carregar()
     ]);
   }
 
-  async salvar(): Promise<void> {
+  aoSelecionarPosto(): void {
+    const posto = this.postoSelecionado();
+
+    this.lotacao.grupo = undefined;
+    this.lotacao.turno = undefined;
+
+    this.gruposDisponiveis = [];
+    this.turnosDisponiveis = [];
+
+    if (!posto) {
+      return;
+    }
+
+    if (posto.tipoEscala === '24x120') {
+      this.gruposDisponiveis = ['A', 'B', 'C', 'D', 'E', 'F'];
+      return;
+    }
+
+    if (posto.tipoEscala === '12x60') {
+      this.gruposDisponiveis =  ['A', 'B', 'C'];
+      this.turnosDisponiveis = ['DIA', 'NOITE'];
+      return;
+    }
+
+    if (posto.tipoEscala ==='ADMINISTRATIVO') {
+      this.turnosDisponiveis = ['MANHA', 'NOITE'];
+    }    
+  }
+
+  postoSelecionado(): Posto | undefined {
+    return this.postosStore
+      .postos()
+      .find(posto => posto.id === this.lotacao.postoId);
+  }
+
+  validar(): boolean {
+    const posto = this.postoSelecionado();
+
+    if (!this.lotacao.guardaId || !this.lotacao.postoId) {
+      this.mensagemErro.set('Selecione um guarda e um posto.');
+      return false;
+    }
+
+    if (!posto) {
+      this.mensagemErro.set('Posto inválido.');
+      return false;
+    }
+
+    if (posto.tipoEscala === '24x120' && !this.lotacao.grupo) {
+      this.mensagemErro.set('Selecione o grupo.');
+      return false;
+    }
+
+    if (posto.tipoEscala === '12x60' && (!this.lotacao.grupo || !this.lotacao.turno)) {
+      this.mensagemErro.set('Selecione o grupo e o turno.');
+      return false;
+    }
+
+    if (posto.tipoEscala === 'ADMINISTRATIVO' && !this.lotacao.grupo) {
+      this.mensagemErro.set('Selecione o turno.');
+      return false;
+    }
+    return true;
+  }
+
+   async salvar(): Promise<void> {
     try {
       this.loading.set(true);
       this.mensagemErro.set('');
 
-      if (!this.lotacao.guardaId || !this.lotacao.postoId) {
-        this.mensagemErro.set(
-          'Informe o guarda e o posto.'
-        );
+      if (!this.validar()) {
         return;
       }
 
-      await this.lotacaoFacade.adicionar(this.lotacao);
+       await this.lotacaoFacade.adicionar(this.lotacao);
 
-      await this.router.navigate([
-        '/lotacoes'
-      ]);
+      await this.router.navigate(['/lotacoes']);
 
     } catch (error) {
       console.error(error);
-
-      this.mensagemErro.set(
-        'Erro ao cadastrar lotação.'
-      );
-
+      this.mensagemErro.set('Erro ao cadastrar lotação.');
     } finally {
       this.loading.set(false);
     }
