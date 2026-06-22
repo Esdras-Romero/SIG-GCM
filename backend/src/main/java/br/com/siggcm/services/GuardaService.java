@@ -1,9 +1,12 @@
 package br.com.siggcm.services;
 
+import br.com.siggcm.enums.PerfilUsuario;
 import br.com.siggcm.dtos.GuardaDTO;
 import br.com.siggcm.entities.GuardaEntity;
+import br.com.siggcm.entities.UsuarioEntity;
 import br.com.siggcm.mappers.GuardaMapper;
 import br.com.siggcm.repositories.GuardaRepository;
+import br.com.siggcm.repositories.UsuarioRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -14,11 +17,11 @@ import java.util.UUID;
 public class GuardaService {
 
     private final GuardaRepository repository;
+    private final UsuarioRepository usuarioRepository;
 
-    public GuardaService(
-            GuardaRepository repository
-    ) {
+    public GuardaService( GuardaRepository repository, UsuarioRepository usuarioRepository ) {
         this.repository = repository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<GuardaDTO> listar() {
@@ -44,27 +47,52 @@ public class GuardaService {
         return GuardaMapper.toDTO(entity);
     }
 
-    public GuardaDTO criar(
-            GuardaDTO dto
-    ) {
-        repository
-                .findByMatricula(dto.matricula())
-                .ifPresent(guarda -> {
-                    throw new RuntimeException(
-                            "Já existe guarda com esta matrícula."
-                    );
-                });
+        public GuardaDTO criar(
+                GuardaDTO dto
+        ) {
+                repository
+                        .findByMatricula(dto.matricula())
+                        .ifPresent(guarda -> {
+                                throw new RuntimeException(
+                                        "Já existe guarda com esta matrícula."
+                                );
+                        });
 
-        GuardaEntity entity =
-                GuardaMapper.toEntity(dto);
+                GuardaEntity entity =
+                        GuardaMapper.toEntity(dto);
 
-        entity.setId(null);
+                entity.setId(null);
 
-        GuardaEntity salvo =
-                repository.save(entity);
+                GuardaEntity salvo =
+                        repository.save(entity);
 
-        return GuardaMapper.toDTO(salvo);
-    }
+                criarUsuarioParaGuarda(salvo);
+
+                return GuardaMapper.toDTO(salvo);
+                }
+
+                private void criarUsuarioParaGuarda(
+                        GuardaEntity guarda
+                ) {
+                String email =
+                        guarda.getMatricula().toLowerCase() + "@siggcm.com";
+
+                if (usuarioRepository.existsByEmail(email)) {
+                        return;
+                }
+
+                UsuarioEntity usuario =
+                        new UsuarioEntity();
+
+                usuario.setNome(guarda.getNome());
+                usuario.setEmail(email);
+                usuario.setSenha("123456");
+                usuario.setPerfil(PerfilUsuario.GUARDA);
+                usuario.setGuardaId(guarda.getId());
+                usuario.setAtivo(true);
+
+                usuarioRepository.save(usuario);
+        }
 
     public GuardaDTO atualizar(
             String id,
