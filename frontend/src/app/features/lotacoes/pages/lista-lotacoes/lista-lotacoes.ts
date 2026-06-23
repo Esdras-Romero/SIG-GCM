@@ -56,6 +56,13 @@ export class ListaLotacoesComponent implements OnInit {
     ?.nome ?? 'Posto não encontrado';
   }
 
+  obterEscalaPosto(postoId: string): string {
+    return this.postoFacade
+      .postos()
+      .find(p => p.id === postoId)
+      ?.tipoEscala ?? '';
+  }
+
   async remover(id: string): Promise<void> {
     const confirmar = confirm('Deseja realmente remover esta lotação?');
 

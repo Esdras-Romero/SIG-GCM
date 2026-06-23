@@ -71,11 +71,19 @@
           </td>
 
           <td class="border border-gray-700 p-2">
-            {{ lotacao.grupo || 'Não informado' }}
+            @if (obterEscalaPosto(lotacao.postoId) === 'ADMINISTRATIVO') {
+              <span class="text-gray-500">-</span>
+            } @else {
+              {{ lotacao.grupo || 'Não informado' }}
+            }
           </td>
 
           <td class="border border-gray-700 p-2">
-            {{ lotacao.turno || 'Não informado' }}
+            @if (obterEscalaPosto(lotacao.postoId) === '24x120') {
+              <span class="text-gray-500">-</span>
+            } @else {
+              {{ lotacao.turno || 'Não informado' }}
+            }
           </td>
 
           <td class="border border-gray-700 p-2">

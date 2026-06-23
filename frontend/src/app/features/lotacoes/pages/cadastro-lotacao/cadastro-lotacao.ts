@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -41,10 +41,26 @@ export class CadastroLotacaoComponent implements OnInit {
     private readonly router: Router
   ) {}
 
+  readonly guardasDisponiveis = computed(() => {
+
+    const guardas = this.guardasStore.guardas();
+
+    const guardasLotados = new Set(
+      this.lotacaoFacade.lotacoes()
+          .filter(lotacao => lotacao.ativo)
+          .map(lotacao => lotacao.guardaId)
+    );
+
+    return guardas.filter(
+      guarda => !guardasLotados.has(guarda.id)
+    );
+  });
+
   async ngOnInit(): Promise<void> {
     await Promise.all([
       this.guardasStore.carregar(),
-      this.postosStore.carregar()
+      this.postosStore.carregar(),
+      this.lotacaoFacade.carregar()
     ]);
   }
 
@@ -66,14 +82,14 @@ export class CadastroLotacaoComponent implements OnInit {
       return;
     }
 
-    if (posto.tipoEscala === '12x60') {
+    else if (posto.tipoEscala === '12x60') {
       this.gruposDisponiveis =  ['A', 'B', 'C'];
       this.turnosDisponiveis = ['DIA', 'NOITE'];
       return;
     }
 
-    if (posto.tipoEscala ==='ADMINISTRATIVO') {
-      this.turnosDisponiveis = ['MANHA', 'NOITE'];
+    else if (posto.tipoEscala ==='ADMINISTRATIVO') {
+      this.turnosDisponiveis = ['MANHA', 'TARDE'];
     }    
   }
 
@@ -106,7 +122,7 @@ export class CadastroLotacaoComponent implements OnInit {
       return false;
     }
 
-    if (posto.tipoEscala === 'ADMINISTRATIVO' && !this.lotacao.grupo) {
+    if (posto.tipoEscala === 'ADMINISTRATIVO' && !this.lotacao.turno) {
       this.mensagemErro.set('Selecione o turno.');
       return false;
     }

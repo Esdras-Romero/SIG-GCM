@@ -51,12 +51,12 @@ public class LotacaoService {
                 UUID.fromString(dto.guardaId());
 
         if (
-                dto.ativo()
-                && repository.existsByGuardaIdAndAtivoTrue(guardaId)
+                 dto.ativo()
+                 && repository.existsByGuardaIdAndAtivoTrue(guardaId)
         ) {
-            throw new RuntimeException(
-                    "Este guarda já possui uma lotação ativa."
-            );
+                throw new RuntimeException(
+                        "Este guarda já possui uma lotação ativa."
+                );
         }
 
         LotacaoEntity entity =
@@ -68,7 +68,7 @@ public class LotacaoService {
                 repository.save(entity);
 
         return LotacaoMapper.toDTO(salvo);
-    }
+    } 
 
     public LotacaoDTO atualizar(
             String id,

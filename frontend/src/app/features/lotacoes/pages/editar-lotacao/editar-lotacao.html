@@ -34,7 +34,7 @@
           class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
           required
         >
-          @for (guarda of guardaFacade.guardas(); track guarda.id) {
+          @for (guarda of guardasDisponiveis(); track guarda.id) {
             <option
               [value]="guarda.id"
               class="bg-gray-800"

@@ -24,7 +24,7 @@
           Selecione um guarda
         </option>
 
-        @for (guarda of guardasStore.guardas(); track guarda.id) {
+        @for (guarda of guardasDisponiveis(); track guarda.id) {
           <option
             [value]="guarda.id"
             class="bg-gray-800"

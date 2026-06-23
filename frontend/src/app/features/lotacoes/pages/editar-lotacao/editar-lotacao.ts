@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -30,6 +30,9 @@ export class EditarLotacaoComponent implements OnInit {
     turno: 'DIA'
   };
 
+  gruposDisponiveis: string[] = [];
+  turnosDisponiveis: string[] = [];
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -37,6 +40,21 @@ export class EditarLotacaoComponent implements OnInit {
     public readonly guardaFacade: GuardaFacade,
     public readonly postoFacade: PostoFacade
   ) {}
+
+  readonly guardasDisponiveis = computed(() => {
+
+    const guardas = this.guardaFacade.guardas();
+
+    const guardasLotados = new Set(
+      this.lotacaoFacade.lotacoes()
+          .filter(lotacao => lotacao.ativo && lotacao.id !== this.lotacao.id)
+          .map(lotacao => lotacao.guardaId)
+    );
+
+    return guardas.filter(
+      guarda => !guardasLotados.has(guarda.id)
+    );
+  });
 
   async ngOnInit(): Promise<void> {
     try {
@@ -68,9 +86,8 @@ export class EditarLotacaoComponent implements OnInit {
         return;
       }
 
-      this.lotacao = {
-        ...lotacaoEncontrada
-      };
+      this.lotacao = { ...lotacaoEncontrada };
+      this.atualizarCamposDisponiveis();
 
     } catch (error) {
       console.error(error);
@@ -104,6 +121,25 @@ export class EditarLotacaoComponent implements OnInit {
 
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  atualizarCamposDisponiveis(): void {
+    const posto = this.postoFacade.postos()
+                      .find(p => p.id === this.lotacao.postoId);
+      
+    this.gruposDisponiveis = [];
+    this.turnosDisponiveis = [];
+
+    if (!posto) return;
+
+    if (posto.tipoEscala == '24x120') {
+      this.gruposDisponiveis = ['A', 'B', 'C', 'D', 'E', 'F'];
+    } else if (posto.tipoEscala === '12x60') {
+      this.gruposDisponiveis = ['A', 'B', 'C'];
+      this.turnosDisponiveis = ['DIA', 'NOITE'];
+    } else if (posto.tipoEscala === 'ADMINISTRATIVO') {
+      this.turnosDisponiveis = ['MANHA', 'TARDE'];
     }
   }
 }
