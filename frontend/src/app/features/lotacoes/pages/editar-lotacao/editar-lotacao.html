@@ -1,27 +1,29 @@
-<section class="p-6 flex justify-start text-gray-200">
+<section class="p-6 max-w-xl text-gray-200">
 
-  <div class="w-full max-w-xl">
+  <h1 class="text-2xl font-bold mb-6 text-white">
+    Editar Lotação
+  </h1>
 
-    <h1 class="text-2xl font-bold mb-6 text-white">
-      Editar Lotação
-    </h1>
+  @if (loading() && !lotacao) {
+    <p class="text-gray-400">
+      Carregando dados da lotação...
+    </p>
+  }
 
-    @if (loading()) {
-      <p class="mb-4 text-gray-400">
-        Carregando...
-      </p>
-    }
+  @if (mensagemErro()) {
+    <p class="text-red-400 mb-4 font-medium">
+      {{ mensagemErro() }}
+    </p>
+  }
 
-    @if (mensagemErro()) {
-      <p class="text-red-400 mb-4 font-medium">
-        {{ mensagemErro() }}
-      </p>
-    }
+  @if (lotacao) {
 
     <form
       (ngSubmit)="salvar()"
       class="space-y-4"
     >
+
+      <!-- Guarda -->
 
       <div>
         <label class="block mb-1 text-gray-300 font-medium">
@@ -31,7 +33,7 @@
         <select
           name="guardaId"
           [(ngModel)]="lotacao.guardaId"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
           required
         >
           @for (guarda of guardasDisponiveis(); track guarda.id) {
@@ -45,6 +47,8 @@
         </select>
       </div>
 
+      <!-- Posto -->
+
       <div>
         <label class="block mb-1 text-gray-300 font-medium">
           Posto
@@ -53,10 +57,11 @@
         <select
           name="postoId"
           [(ngModel)]="lotacao.postoId"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
+          (change)="aoSelecionarPosto()"
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
           required
         >
-          @for (posto of postoFacade.postos(); track posto.id) {
+          @for (posto of postosStore.postos(); track posto.id) {
             <option
               [value]="posto.id"
               class="bg-gray-800"
@@ -67,71 +72,94 @@
         </select>
       </div>
 
-      <div>
-        <label class="block mb-1 text-gray-300 font-medium">
-          Grupo
-        </label>
+      <!-- Grupo -->
 
-        <select
-          name="grupo"
-          [(ngModel)]="lotacao.grupo"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-        >
-          <option value="A" class="bg-gray-800">A</option>
-          <option value="B" class="bg-gray-800">B</option>
-          <option value="C" class="bg-gray-800">C</option>
-          <option value="D" class="bg-gray-800">D</option>
-          <option value="E" class="bg-gray-800">E</option>
-          <option value="F" class="bg-gray-800">F</option>
-        </select>
-      </div>
+      @if (gruposDisponiveis.length > 0) {
 
-      <div>
-        <label class="block mb-1 text-gray-300 font-medium">
-          Turno
-        </label>
+        <div>
+          <label class="block mb-1 text-gray-300 font-medium">
+            Grupo
+          </label>
 
-        <select
-          name="turno"
-          [(ngModel)]="lotacao.turno"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-        >
-          <option value="DIA" class="bg-gray-800">Dia</option>
-          <option value="NOITE" class="bg-gray-800">Noite</option>
-          <option value="MANHA" class="bg-gray-800">Manhã</option>
-          <option value="TARDE" class="bg-gray-800">Tarde</option>
-        </select>
-      </div>
+          <select
+            name="grupo"
+            [(ngModel)]="lotacao.grupo"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+          >
+            @for (grupo of gruposDisponiveis; track grupo) {
+              <option
+                [value]="grupo"
+                class="bg-gray-800"
+              >
+                {{ grupo }}
+              </option>
+            }
+          </select>
+        </div>
 
-      <label class="flex items-center gap-2 text-gray-300 font-medium cursor-pointer">
+      }
+
+      <!-- Turno -->
+
+      @if (turnosDisponiveis.length > 0) {
+
+        <div>
+          <label class="block mb-1 text-gray-300 font-medium">
+            Turno
+          </label>
+
+          <select
+            name="turno"
+            [(ngModel)]="lotacao.turno"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+          >
+            @for (turno of turnosDisponiveis; track turno) {
+              <option
+                [value]="turno"
+                class="bg-gray-800"
+              >
+                {{ turno }}
+              </option>
+            }
+          </select>
+        </div>
+
+      }
+
+      <!-- Ativo -->
+
+      <label class="flex items-center gap-2 text-gray-300 font-medium">
         <input
           type="checkbox"
           name="ativo"
           [(ngModel)]="lotacao.ativo"
-          class="rounded bg-gray-800 border-gray-700 text-blue-600 focus:ring-0 focus:ring-offset-0"
         />
         Ativa
       </label>
 
+      <!-- Botões -->
+
       <div class="flex gap-2 pt-2">
+
         <button
           type="submit"
-          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
           [disabled]="loading()"
         >
-          Salvar Alterações
+          {{ loading() ? 'Salvando...' : 'Salvar Alterações' }}
         </button>
 
         <a
           routerLink="/lotacoes"
-          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
+          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
         >
           Voltar
         </a>
+
       </div>
 
     </form>
 
-  </div>
+  }
 
 </section>

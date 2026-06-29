@@ -42,7 +42,6 @@ public class DatabaseSeeder {
 
                 guarda.setNome("Guarda Usuário");
                 guarda.setMatricula("GCM001");
-                guarda.setTipoEscala("24x120");
                 guarda.setAtivo(true);
 
                 GuardaEntity guardaSalvo =

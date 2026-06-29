@@ -7,6 +7,6 @@ export interface Guarda {
   id: string;
   nome: string;
   matricula: string;
-  tipoEscala: TipoEscala;
+  tipoEscala?: TipoEscala | null;
   ativo: boolean;
 }

@@ -14,4 +14,6 @@ public interface LotacaoRepository
     List<LotacaoEntity> findByPostoId(UUID postoId);
 
     boolean existsByGuardaIdAndAtivoTrue(UUID guardaId);
+
+    long countByPostoIdAndAtivoTrue(UUID postoId);
 }

@@ -93,12 +93,13 @@
           {{ loading() ? 'Salvando...' : 'Salvar' }}
         </button>
 
-        <a
-          routerLink="/postos"
+        <button
+          type="button"
+          (click)="voltar()"
           class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
         >
           Voltar
-        </a>
+      </button>
       </div>
 
     </form>

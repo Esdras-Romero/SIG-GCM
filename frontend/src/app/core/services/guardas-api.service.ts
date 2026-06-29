@@ -27,10 +27,17 @@ export class GuardasApiService {
     guarda: Guarda
   ): Promise<Guarda> {
 
+    const dto = {
+      id: guarda.id,
+      nome: guarda.nome,
+      matricula: guarda.matricula,
+      ativo: guarda.ativo
+    };
+
     return firstValueFrom(
       this.http.post<Guarda>(
         this.apiUrl,
-        guarda
+        dto
       )
     );
   }
@@ -39,10 +46,17 @@ export class GuardasApiService {
     guarda: Guarda
   ): Promise<Guarda> {
 
+      const dto = {
+        id: guarda.id,
+        nome: guarda.nome,
+        matricula: guarda.matricula,
+        ativo: guarda.ativo
+      };
+
     return firstValueFrom(
       this.http.put<Guarda>(
         `${this.apiUrl}/${guarda.id}`,
-        guarda
+        dto
       )
     );
   }

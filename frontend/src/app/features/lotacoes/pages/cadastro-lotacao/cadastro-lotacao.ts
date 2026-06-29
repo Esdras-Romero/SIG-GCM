@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { Lotacao } from '../../../../core/models/lotacao.model';
@@ -22,6 +22,8 @@ export class CadastroLotacaoComponent implements OnInit {
   loading = signal(false);
   mensagemErro = signal('');
 
+  origem = 'lista';
+
   lotacao: Lotacao = {
     id: crypto.randomUUID(),
     guardaId: '',
@@ -38,7 +40,8 @@ export class CadastroLotacaoComponent implements OnInit {
     public readonly guardasStore: GuardasStore,
     public readonly postosStore: PostosStore,
     private readonly lotacaoFacade: LotacaoFacade,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
 
   readonly guardasDisponiveis = computed(() => {
@@ -57,11 +60,25 @@ export class CadastroLotacaoComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+
+    this.origem = 
+      this.route.snapshot.queryParamMap.get('origem') ?? 'lista';
+
     await Promise.all([
       this.guardasStore.carregar(),
       this.postosStore.carregar(),
       this.lotacaoFacade.carregar()
     ]);
+  }
+
+  voltar(): void {
+
+    if (this.origem === 'dashboard') {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    this.router.navigate(['/lotacoes']);
   }
 
   aoSelecionarPosto(): void {
@@ -138,9 +155,9 @@ export class CadastroLotacaoComponent implements OnInit {
         return;
       }
 
-       await this.lotacaoFacade.adicionar(this.lotacao);
+      await this.lotacaoFacade.adicionar(this.lotacao);
 
-      await this.router.navigate(['/lotacoes']);
+      this.voltar();
 
     } catch (error) {
       console.error(error);

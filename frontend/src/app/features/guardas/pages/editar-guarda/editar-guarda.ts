@@ -23,7 +23,6 @@ export class EditarGuardaComponent implements OnInit {
     id: '',
     nome: '',
     matricula: '',
-    tipoEscala: '24x120',
     ativo: true
   };
 

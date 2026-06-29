@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  signal,
-  computed
-} from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
-import {
-  Escala,
-  GerarEscalaRequest
-} from '../models/escala.model';
+import { Escala, GerarEscalaRequest } from '../models/escala.model';
 
 import { EscalasApiService } from '../services/escalas-api.service';
+
+import { UltimaEscalaResponse } from '../models/ultima-escala.model';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +44,16 @@ export class EscalasStore {
     await this.carregar();
 
     return escala;
+  }
+
+  async buscarUltimaEscala(
+    postoId: string
+  ): Promise<UltimaEscalaResponse> {
+
+    return await this.service.buscarUltimaEscala(
+      postoId
+    );
+
   }
 
   buscarPorId(

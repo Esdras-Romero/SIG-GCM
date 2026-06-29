@@ -17,7 +17,7 @@ public class GuardaMapper {
                 entity.getId().toString(),
                 entity.getNome(),
                 entity.getMatricula(),
-                entity.getTipoEscala(),
+                null,
                 entity.isAtivo()
         );
     }
@@ -36,7 +36,6 @@ public class GuardaMapper {
 
         entity.setNome(dto.nome());
         entity.setMatricula(dto.matricula());
-        entity.setTipoEscala(dto.tipoEscala());
         entity.setAtivo(dto.ativo());
 
         return entity;
@@ -48,7 +47,6 @@ public class GuardaMapper {
     ) {
         entity.setNome(dto.nome());
         entity.setMatricula(dto.matricula());
-        entity.setTipoEscala(dto.tipoEscala());
         entity.setAtivo(dto.ativo());
     }
 }

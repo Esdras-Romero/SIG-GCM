@@ -15,8 +15,5 @@ export interface GerarEscalaRequest {
   postoId: string;
   mes: number;
   ano: number;
-  tipoEscala: TipoEscala;
   grupoInicial?: string;
-  grupoInicialDia?: string;
-  grupoInicialNoite?: string;
 }

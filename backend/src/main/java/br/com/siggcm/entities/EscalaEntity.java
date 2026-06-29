@@ -38,6 +38,9 @@ public class EscalaEntity {
     @Column(nullable = false)
     private String status;
 
+    @Column 
+    private String grupoInicial;
+
     @OneToMany(
             mappedBy = "escala",
             cascade = CascadeType.ALL,

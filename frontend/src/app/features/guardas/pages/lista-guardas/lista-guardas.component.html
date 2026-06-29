@@ -14,7 +14,7 @@
       </a>
 
       <a
-        routerLink="/guardas/cadastro"
+        routerLink="/guardas/cadastro" [queryParams]="{ origem: 'lista' }"
         class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Novo Guarda
@@ -59,7 +59,7 @@
           </td>
 
           <td class="border border-gray-700 p-2">
-            {{ guarda.tipoEscala }}
+            {{ guarda.tipoEscala ?? 'Não Lotado' }}
           </td>
 
           <td class="border border-gray-700 p-2">

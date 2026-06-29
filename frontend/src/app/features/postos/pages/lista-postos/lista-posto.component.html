@@ -12,7 +12,8 @@
       </a>
 
       <a
-        routerLink="/postos/cadastro"
+        routerLink="/postos/cadastro" 
+        [queryParams]="{ origem: 'lista' }"
         class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Novo Posto

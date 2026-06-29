@@ -2,6 +2,7 @@ package br.com.siggcm.controllers;
 
 import br.com.siggcm.dtos.EscalaDTO;
 import br.com.siggcm.dtos.GerarEscalaDTO;
+import br.com.siggcm.dtos.UltimaEscalaDTO;
 import br.com.siggcm.services.EscalaService;
 
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +30,12 @@ public class EscalaController {
             @RequestBody GerarEscalaDTO dto
     ) {
         return service.gerar(dto);
+    }
+
+    @GetMapping("/posto/{postoId}/ultima")
+    public UltimaEscalaDTO buscarUltimaEscala(
+        @PathVariable String postoId
+    ) {
+        return service.buscarUltimaEscala(postoId);
     }
 }

@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
+
 import { environment } from '../../../environments/environment';
 
-import {
-  Escala,
-  GerarEscalaRequest
-} from '../models/escala.model';
+import { Escala, GerarEscalaRequest, } from '../models/escala.model';
+import { UltimaEscalaResponse } from '../models/ultima-escala.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +35,19 @@ export class EscalasApiService {
         request
       )
     );
+  }
+
+  buscarUltimaEscala(
+    postoId: string
+  ): Promise<UltimaEscalaResponse> {
+
+    return firstValueFrom(
+
+      this.http.get<UltimaEscalaResponse>(
+        `${this.apiUrl}/posto/${postoId}/ultima`
+      )
+
+    );
+
   }
 }

@@ -28,8 +28,5 @@ public class GuardaEntity {
     private String matricula;
 
     @Column(nullable = false)
-    private String tipoEscala;
-
-    @Column(nullable = false)
     private boolean ativo;
 }

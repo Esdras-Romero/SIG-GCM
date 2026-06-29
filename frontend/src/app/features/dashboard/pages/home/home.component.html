@@ -43,15 +43,15 @@
           <div class="h-px bg-gray-700 mt-1 mb-2"></div>
         </div>
 
-        <a routerLink="/guardas/cadastro" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
+        <a routerLink="/guardas/cadastro" [queryParams]="{ origem: 'dashboard' }" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
           Cadastrar Guarda
         </a>
 
-        <a routerLink="/postos/cadastro" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
+        <a routerLink="/postos/cadastro" [queryParams]="{ origem: 'dashboard' }" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
           Cadastrar Posto
         </a>
 
-        <a routerLink="/lotacoes/cadastro" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
+        <a routerLink="/lotacoes/cadastro" [queryParams]="{ origem: 'dashboard' }" class="bg-green-700 hover:bg-green-800 px-4 py-3 rounded-lg text-center">
           Cadastrar Lotação
         </a>
 

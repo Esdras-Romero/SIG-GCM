@@ -19,6 +19,7 @@
         <select
           name="postoId"
           [(ngModel)]="request.postoId"
+          (change)="aoSelecionarPosto()"
           class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
           required
         >
@@ -36,6 +37,34 @@
           }
         </select>
       </div>
+
+      @if (consultandoUltimaEscala()) {
+        <div class="bg-gray-800 border border-gray-700 rounded p-3 text-blue-300">
+          Consultando última escala...
+        </div>
+      }
+
+      @if (tipoEscalaSelecionada()) {
+        <div class="bg-gray-800 border border-gray-700 rounded p-3">
+
+          <span class="font-medium">
+            Tipo de Escala:
+          </span>
+
+          <span class="ml-2 text-blue-400">
+            {{ tipoEscalaSelecionada() }}
+          </span>
+        </div>
+      }
+
+      @if (ultimaEscala() && ultimaEscala()?.possuiEscalaAnterior) {
+        <div class="bg-gray-800 border border-gray-700 rounded p-3 text-green-300">
+          Grupo sugerido pelo sistema:
+          <span class="font-bold ml-1">
+            {{ ultimaEscala()?.grupoSugerido }}
+          </span>
+        </div>
+      }
 
       <div>
         <label class="block mb-1 text-gray-300 font-medium">
@@ -68,83 +97,47 @@
         />
       </div>
 
-      <div>
-        <label class="block mb-1 text-gray-300 font-medium">
-          Tipo de Escala
-        </label>
-
-        <select
-          name="tipoEscala"
-          [(ngModel)]="request.tipoEscala"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-        >
-          <option value="24x120" class="bg-gray-800">
-            24x120
-          </option>
-
-          <option value="12x60" class="bg-gray-800">
-            12x60
-          </option>
-
-          <option value="ADMINISTRATIVO" class="bg-gray-800">
-            Administrativo
-          </option>
-        </select>
-      </div>
-
-      @if (request.tipoEscala === '24x120') {
+      @if (
+        tipoEscalaSelecionada() === '24x120' ||
+        tipoEscalaSelecionada() === '12x60'
+      ) {
         <div>
+
           <label class="block mb-1 text-gray-300 font-medium">
             Grupo Inicial
           </label>
 
+          @if (!ultimaEscala()?.possuiEscalaAnterior) {
           <select
             name="grupoInicial"
             [(ngModel)]="request.grupoInicial"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
           >
-            <option value="A" class="bg-gray-800">A</option>
-            <option value="B" class="bg-gray-800">B</option>
-            <option value="C" class="bg-gray-800">C</option>
-            <option value="D" class="bg-gray-800">D</option>
-            <option value="E" class="bg-gray-800">E</option>
-            <option value="F" class="bg-gray-800">F</option>
+
+            @for (
+              grupo of gruposDisponiveis(); track grupo) {
+             <option [value]="grupo">
+              {{ grupo }}
+             </option>
+            }
+
           </select>
+          }
+           @else {
+          <div class="bg-gray-900 border border-gray-700 rounded p-2 text-gray-300">
+
+            {{ ultimaEscala()?.grupoSugerido }}
+
+            <span class="text-sm text-gray-500 ml-2">
+              (definido automaticamente pelo sistema)
+            </span>
+
+          </div>
+
+        }
+
         </div>
-      }
-
-      @if (request.tipoEscala === '12x60') {
-        <div>
-          <label class="block mb-1 text-gray-300 font-medium">
-            Grupo Inicial Dia
-          </label>
-
-          <select
-            name="grupoInicialDia"
-            [(ngModel)]="request.grupoInicialDia"
-            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          >
-            <option value="A" class="bg-gray-800">A</option>
-            <option value="B" class="bg-gray-800">B</option>
-            <option value="C" class="bg-gray-800">C</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-1 text-gray-300 font-medium">
-            Grupo Inicial Noite
-          </label>
-
-          <select
-            name="grupoInicialNoite"
-            [(ngModel)]="request.grupoInicialNoite"
-            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          >
-            <option value="A" class="bg-gray-800">A</option>
-            <option value="B" class="bg-gray-800">B</option>
-            <option value="C" class="bg-gray-800">C</option>
-          </select>
-        </div>
+        
       }
 
       @if (mensagemErro()) {

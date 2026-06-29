@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { Posto } from '../../../../core/models/posto.model';
@@ -11,10 +11,12 @@ import { PostoFacade } from '../../state/posto.facade';
   imports: [FormsModule, RouterLink],
   templateUrl: './cadastro-posto.component.html'
 })
-export class CadastroPostoComponent {
+export class CadastroPostoComponent implements OnInit{
 
   loading = signal(false);
   mensagemErro = signal('');
+
+  origem = 'lista';
 
   posto: Posto = {
     id: crypto.randomUUID(),
@@ -26,8 +28,23 @@ export class CadastroPostoComponent {
 
   constructor(
     private readonly postoFacade: PostoFacade,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    this.origem =
+      this.route.snapshot.queryParamMap.get('origem') ?? 'lista';
+  }
+
+  voltar(): void {
+    if (this.origem === 'dashboard') {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
+    this.router.navigate(['/postos']);
+  }
 
   async salvar(): Promise<void> {
     try {
@@ -36,7 +53,7 @@ export class CadastroPostoComponent {
 
       await this.postoFacade.adicionar(this.posto);
 
-      await this.router.navigate(['/postos']);
+      this.voltar();
 
     } catch (error) {
       console.error(error);
