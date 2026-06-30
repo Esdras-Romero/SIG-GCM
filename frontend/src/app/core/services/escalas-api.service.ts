@@ -48,6 +48,14 @@ export class EscalasApiService {
       )
 
     );
+  }
 
+  baixarPdf(id: string): Promise<Blob> {
+    return firstValueFrom(
+      this.http.get(
+        `${this.apiUrl}/${id}/pdf`,
+        { responseType: 'blob' }
+      )
+    );
   }
 }

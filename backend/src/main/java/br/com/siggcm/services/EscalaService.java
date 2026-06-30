@@ -5,7 +5,6 @@ import br.com.siggcm.dtos.GerarEscalaDTO;
 import br.com.siggcm.dtos.UltimaEscalaDTO;
 import br.com.siggcm.entities.DiaEscalaEntity;
 import br.com.siggcm.entities.EscalaEntity;
-import br.com.siggcm.entities.LotacaoEntity;
 import br.com.siggcm.entities.PostoEntity;
 import br.com.siggcm.mappers.EscalaMapper;
 import br.com.siggcm.repositories.EscalaRepository;

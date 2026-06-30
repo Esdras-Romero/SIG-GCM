@@ -8,10 +8,12 @@
 
     <form
       (ngSubmit)="gerar()"
-      class="space-y-4"
-    >
+      class="space-y-4">
+
+      <!-- POSTO -->
 
       <div>
+
         <label class="block mb-1 text-gray-300 font-medium">
           Posto
         </label>
@@ -20,54 +22,78 @@
           name="postoId"
           [(ngModel)]="request.postoId"
           (change)="aoSelecionarPosto()"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          required
-        >
+          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+          required>
+
           <option value="">
             Selecione um posto
           </option>
 
           @for (posto of postosStore.postos(); track posto.id) {
-            <option
-              [value]="posto.id"
-              class="bg-gray-800"
-            >
-              {{ posto.nome }} - {{ posto.tipoEscala }}
+
+            <option [value]="posto.id">
+
+              {{ posto.nome }}
+
+              -
+
+              {{ posto.tipoEscala }}
+
             </option>
+
           }
+
         </select>
+
       </div>
 
       @if (consultandoUltimaEscala()) {
+
         <div class="bg-gray-800 border border-gray-700 rounded p-3 text-blue-300">
+
           Consultando última escala...
+
         </div>
+
       }
 
       @if (tipoEscalaSelecionada()) {
-        <div class="bg-gray-800 border border-gray-700 rounded p-3">
 
-          <span class="font-medium">
-            Tipo de Escala:
-          </span>
+        <div class="bg-gray-800 rounded p-3">
 
-          <span class="ml-2 text-blue-400">
+          Tipo de Escala:
+
+          <span class="text-blue-400 ml-2">
+
             {{ tipoEscalaSelecionada() }}
+
           </span>
+
         </div>
+
       }
 
-      @if (ultimaEscala() && ultimaEscala()?.possuiEscalaAnterior) {
-        <div class="bg-gray-800 border border-gray-700 rounded p-3 text-green-300">
-          Grupo sugerido pelo sistema:
-          <span class="font-bold ml-1">
+      @if (ultimaEscala()?.possuiEscalaAnterior) {
+
+        <div class="bg-gray-800 rounded p-3 text-green-300">
+
+          Grupo sugerido:
+
+          <strong>
+
             {{ ultimaEscala()?.grupoSugerido }}
-          </span>
+
+          </strong>
+
         </div>
+
       }
+
+      <!-- MÊS -->
 
       <div>
-        <label class="block mb-1 text-gray-300 font-medium">
+
+        <label class="block mb-1">
           Mês
         </label>
 
@@ -77,13 +103,15 @@
           [(ngModel)]="request.mes"
           min="1"
           max="12"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          required
-        />
+          class="w-full bg-gray-800 border border-gray-700 rounded p-2">
+
       </div>
 
+      <!-- ANO -->
+
       <div>
-        <label class="block mb-1 text-gray-300 font-medium">
+
+        <label class="block mb-1">
           Ano
         </label>
 
@@ -92,86 +120,126 @@
           name="ano"
           [(ngModel)]="request.ano"
           min="2024"
-          class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          required
-        />
+          class="w-full bg-gray-800 border border-gray-700 rounded p-2">
+
       </div>
 
       @if (
-        tipoEscalaSelecionada() === '24x120' ||
         tipoEscalaSelecionada() === '12x60'
+        ||
+        tipoEscalaSelecionada() === '24x120'
       ) {
+
         <div>
 
-          <label class="block mb-1 text-gray-300 font-medium">
+          <label class="block mb-1">
+
             Grupo Inicial
+
           </label>
 
           @if (!ultimaEscala()?.possuiEscalaAnterior) {
-          <select
-            name="grupoInicial"
-            [(ngModel)]="request.grupoInicial"
-            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 focus:outline-none focus:border-blue-500"
-          >
 
-            @for (
-              grupo of gruposDisponiveis(); track grupo) {
-             <option [value]="grupo">
-              {{ grupo }}
-             </option>
-            }
+            <select
+              name="grupoInicial"
+              [(ngModel)]="request.grupoInicial"
+              class="w-full bg-gray-800 border border-gray-700 rounded p-2">
 
-          </select>
+              @for (grupo of gruposDisponiveis(); track grupo) {
+
+                <option [value]="grupo">
+
+                  {{ grupo }}
+
+                </option>
+
+              }
+
+            </select>
+
+          } @else {
+
+            <div class="bg-gray-900 rounded p-2">
+
+              {{ ultimaEscala()?.grupoSugerido }}
+
+            </div>
+
           }
-           @else {
-          <div class="bg-gray-900 border border-gray-700 rounded p-2 text-gray-300">
-
-            {{ ultimaEscala()?.grupoSugerido }}
-
-            <span class="text-sm text-gray-500 ml-2">
-              (definido automaticamente pelo sistema)
-            </span>
-
-          </div>
-
-        }
 
         </div>
-        
+
       }
 
       @if (mensagemErro()) {
-        <p class="text-red-400 font-medium">
+
+        <p class="text-red-400">
+
           {{ mensagemErro() }}
+
         </p>
+
       }
 
-      @if (escalaGerada()) {
-        <div class="bg-green-900/40 border border-green-700 rounded p-4 text-green-300">
-          Escala gerada com sucesso.
-          Dias gerados: {{ escalaGerada()?.dias?.length }}
-        </div>
-      }
+      <div class="flex gap-2">
 
-      <div class="flex gap-2 pt-2">
         <button
           type="submit"
-          class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
           [disabled]="loading()"
-        >
+          class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded">
+
           {{ loading() ? 'Gerando...' : 'Gerar Escala' }}
+
         </button>
 
         <button
           type="button"
-          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors border border-gray-600"
           (click)="voltarParaLista()"
-        >
+          class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+
           Voltar
+
         </button>
+
       </div>
 
     </form>
+
+    @if (escalaGerada()) {
+
+      <div class="mt-10">
+
+        <div class="bg-green-900 border border-green-700 rounded-lg p-6">
+
+          <h2 class="text-xl font-bold text-green-300">
+
+            ✅ Escala gerada com sucesso.
+
+          </h2>
+
+          <p class="text-gray-300 mt-2">
+
+            A escala foi salva no banco de dados.
+
+          </p>
+
+          <button
+
+            type="button"
+
+            (click)="baixarPdf()"
+
+            class="mt-5 bg-red-700 hover:bg-red-600 text-white px-5 py-3 rounded-lg font-semibold transition-colors">
+
+            📄 Exportar PDF
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
 
   </div>
 

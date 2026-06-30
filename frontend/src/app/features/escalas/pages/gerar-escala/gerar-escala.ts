@@ -3,6 +3,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 import { GerarEscalaRequest, Escala } from '../../../../core/models/escala.model';
 import { UltimaEscalaResponse } from '../../../../core/models/ultima-escala.model';
@@ -13,7 +14,7 @@ import { EscalasStore } from '../../../../core/stores/escalas.store';
 @Component({
   selector: 'app-gerar-escala',
   standalone: true,
-  imports: [ FormsModule ],
+  imports: [ FormsModule, DatePipe ],
   templateUrl: './gerar-escala.html'
 })
 export class GerarEscalaComponent implements OnInit {
@@ -114,6 +115,17 @@ export class GerarEscalaComponent implements OnInit {
 
     }
 
+  }
+
+  async baixarPdf(): Promise<void> {
+
+    const escala = this.escalaGerada();
+
+    if (!escala) {
+      return;
+    }
+
+    await this.escalasStore.baixarPdf(escala.id);
   }
 
   readonly tipoEscalaSelecionada = computed(() => {

@@ -53,7 +53,18 @@ export class EscalasStore {
     return await this.service.buscarUltimaEscala(
       postoId
     );
+  }
 
+  async baixarPdf(id: string): Promise<void> {
+    const blob = await this.service.baixarPdf(id);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `escala-${id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 
   buscarPorId(

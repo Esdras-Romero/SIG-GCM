@@ -3,9 +3,7 @@ package br.com.siggcm.services;
 import br.com.siggcm.dtos.GuardaDTO;
 import br.com.siggcm.dtos.LotacaoDTO;
 import br.com.siggcm.dtos.PostoDTO;
-import br.com.siggcm.dtos.DiaEscalaResumoDTO;
 import br.com.siggcm.entities.GuardaEntity;
-import br.com.siggcm.entities.EscalaEntity;
 import br.com.siggcm.mappers.GuardaMapper;
 import br.com.siggcm.mappers.LotacaoMapper;
 import br.com.siggcm.mappers.PostoMapper;
@@ -18,11 +16,6 @@ import br.com.siggcm.dtos.CalendarioGuardaDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Service
 public class AreaGuardaService {
